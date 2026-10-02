@@ -1,2 +1,0 @@
--keep class com.homeinventory.data.** { *; }
--keep class com.google.gson.* { *; }
