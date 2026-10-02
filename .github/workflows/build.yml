@@ -41,15 +41,16 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build Debug APK
+      - name: Setup Gradle Wrapper
         run: |
-          if [ -f "gradlew" ]; then
-            chmod +x gradlew
-            ./gradlew assembleDebug
-          else
-            echo "未检测到 gradlew 文件，自动调用系统 Gradle 编译..."
-            gradle assembleDebug
+          if [ ! -f "gradlew" ]; then
+            echo "未检测到 gradlew，正在自动生成兼容版 Gradle 8.5..."
+            gradle wrapper --gradle-version 8.5
           fi
+          chmod +x gradlew
+
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
