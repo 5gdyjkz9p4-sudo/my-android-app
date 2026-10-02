@@ -41,16 +41,14 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup Gradle Wrapper
+      - name: Install Independent Gradle 8.5
         run: |
-          if [ ! -f "gradlew" ]; then
-            echo "未检测到 gradlew，正在自动生成兼容版 Gradle 8.5..."
-            gradle wrapper --gradle-version 8.5
-          fi
-          chmod +x gradlew
+          echo "下载并解压官方 Gradle 8.5..."
+          wget -q https://services.gradle.org/distributions/gradle-8.5-bin.zip
+          unzip -q gradle-8.5-bin.zip
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug
+        run: ./gradle-8.5/bin/gradle assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
