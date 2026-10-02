@@ -18,14 +18,18 @@ jobs:
         run: |
           mkdir -p extracted_temp
           unzip -o *.zip -d extracted_temp
-          GRADLEW_PATH=$(find extracted_temp -name "gradlew" -type f | head -n 1)
-          if [ -n "$GRADLEW_PATH" ]; then
-            PROJECT_DIR=$(dirname "$GRADLEW_PATH")
-            echo "找到 gradlew 所在目录: $PROJECT_DIR"
+          
+          # 寻找 build.gradle 所在目录
+          BUILD_FILE=$(find extracted_temp -name "build.gradle*" -type f | head -n 1)
+          if [ -n "$BUILD_FILE" ]; then
+            PROJECT_DIR=$(dirname "$BUILD_FILE")
+            if [ "$(basename "$PROJECT_DIR")" = "app" ]; then
+              PROJECT_DIR=$(dirname "$PROJECT_DIR")
+            fi
+            echo "找到项目根目录: $PROJECT_DIR"
             shopt -s dotglob
             cp -r "$PROJECT_DIR"/* .
           else
-            echo "未找到 gradlew，移动所有解压文件"
             shopt -s dotglob
             cp -r extracted_temp/* .
           fi
@@ -37,14 +41,18 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Make gradlew executable
-        run: chmod +x gradlew
-
       - name: Build Debug APK
-        run: ./gradlew assembleDebug
+        run: |
+          if [ -f "gradlew" ]; then
+            chmod +x gradlew
+            ./gradlew assembleDebug
+          else
+            echo "未检测到 gradlew 文件，自动调用系统 Gradle 编译..."
+            gradle assembleDebug
+          fi
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: "**/build/outputs/apk/debug/*.apk"
