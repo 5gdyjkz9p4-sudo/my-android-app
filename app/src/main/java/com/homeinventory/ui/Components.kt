@@ -1,5 +1,5 @@
 package com.homeinventory.ui
-​import androidx.compose.foundation.clickable
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -17,7 +17,7 @@ import com.homeinventory.data.FolderSummary
 import com.homeinventory.data.ItemEntity
 import com.homeinventory.viewmodel.InventoryViewModel
 import kotlinx.coroutines.launch
-​@Composable
+@Composable
 fun FolderRow(summary: FolderSummary, onClick: () -> Unit, onLongClick: () -> Unit) {
 Card(
 modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
@@ -40,7 +40,7 @@ IconButton(onClick = onLongClick) { Icon(Icons.Default.MoreVert, "更多") }
 }
 }
 }
-​@Composable
+@Composable
 fun ItemRow(item: ItemEntity, onClick: () -> Unit, onQtyChange: (Int) -> Unit, onLongClick: () -> Unit) {
 val isOut = item.quantity == 0
 val isLow = !isOut && item.quantity <= item.lowStockThreshold
@@ -69,13 +69,13 @@ IconButton(onClick = onLongClick) { Icon(Icons.Default.MoreVert, "更多") }
 }
 }
 }
-​@Composable
+@Composable
 fun TreeSelectorDialog(viewModel: InventoryViewModel, onDismiss: () -> Unit, onSelect: (String?) -> Unit) {
 var expandedFolders by remember { mutableStateOf(setOf<String>()) }
 val coroutineScope = rememberCoroutineScope()
 var rootFolders by remember { mutableStateOf<List<FolderEntity>>(emptyList()) }
-​LaunchedEffect(Unit) { rootFolders = viewModel.getRootFoldersSync() }
-​AlertDialog(
+LaunchedEffect(Unit) { rootFolders = viewModel.getRootFoldersSync() }
+AlertDialog(
 onDismissRequest = onDismiss,
 title = { Text("选择目标位置") },
 text = {
@@ -99,7 +99,7 @@ Text("📁 ${folder.name}")
 }
 if (isExpanded) { children.forEach { FolderNode(it, depth + 1) } }
 }
-​LazyColumn(modifier = Modifier.fillMaxHeight(0.6f)) {
+LazyColumn(modifier = Modifier.fillMaxHeight(0.6f)) {
 item {
 Text("🏠 我的库存 (根目录)", modifier = Modifier.fillMaxWidth().padding(8.dp).clickable { onSelect(null) }, fontWeight = FontWeight.Bold)
 }
